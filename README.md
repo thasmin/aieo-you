@@ -13,22 +13,27 @@ llm_visibility/
   client.py            # LLM client abstraction
   crawler.py           # Website crawler and text extractor
   profile_extractor.py # Company profile extraction with LLM
+  prompt_generator.py  # Customer prompt generation with LLM
   models/
     __init__.py
     company.py         # Company profile data model
+    customer_prompt.py # Customer prompt data models
   prompts/
     __init__.py
     company_profile.py # Profile extraction prompts
+    customer_prompts.py # Customer prompt generation prompts
   pipeline/            # Pipeline components (future)
   reports/             # Report generation (future)
   data/
     logs/              # Application logs
     crawls/            # Saved crawl data
     company_profiles/  # Extracted company profiles
+    prompts/           # Generated customer prompts
   main.py              # Entry point
   example_llm_usage.py # LLM client usage examples
   example_crawler_usage.py # Crawler usage examples
   example_profile_extraction.py # Profile extraction examples
+  example_prompt_generation.py # Prompt generation examples
 ```
 
 ## Setup
@@ -202,6 +207,78 @@ print(profile)
 ```
 
 See `example_profile_extraction.py` for more examples.
+
+## Customer Prompt Generation
+
+The project uses LLMs to generate realistic customer prompts based on company profiles.
+
+### Features
+
+- **LLM-Powered Generation**: Creates diverse customer questions using LLM
+- **Intent Labeling**: Each prompt includes an intent label (comparison, recommendation, etc.)
+- **Target Count**: Aims for 100 prompts per company
+- **Automatic Deduplication**: Removes similar/duplicate prompts
+- **Data Persistence**: Saves prompts to `/data/prompts/`
+
+### Intent Labels
+
+- **information_seeking** - Basic information about products/services
+- **comparison** - Comparing options or alternatives
+- **recommendation** - Seeking advice or recommendations
+- **problem_solving** - Specific problems to solve
+- **pricing** - Cost and pricing information
+- **feature_inquiry** - Specific features or capabilities
+- **use_case** - Checking if it works for their use case
+- **getting_started** - How to begin or implement
+- **technical_support** - Help with technical issues
+- **integration** - Integrations with other tools
+
+### Usage Example
+
+```python
+from models.company import CompanyProfile
+from prompt_generator import generate_prompts
+
+# Load a company profile
+profile = CompanyProfile.load("data/company_profiles/acme.json")
+
+# Generate customer prompts
+prompt_set = generate_prompts(profile, save=True)
+
+print(f"Generated {len(prompt_set)} prompts")
+print(f"Intent distribution: {prompt_set.count_by_intent()}")
+
+# Access prompts by intent
+comparison_prompts = prompt_set.get_by_intent("comparison")
+for prompt in comparison_prompts:
+    print(f"- {prompt.text}")
+```
+
+### Complete Pipeline
+
+```python
+# Full pipeline: crawl → extract profile → generate prompts
+from crawler import crawl_website
+from profile_extractor import extract_profile
+from prompt_generator import generate_prompts
+
+# 1. Crawl website
+crawl_data = crawl_website("https://example.com", save=True)
+
+# 2. Extract company profile
+profile = extract_profile(
+    crawl_data["concatenated_text"],
+    crawl_data["base_url"],
+    save=True
+)
+
+# 3. Generate customer prompts
+prompts = generate_prompts(profile, save=True)
+
+print(f"Generated {len(prompts)} prompts for {profile.company_name}")
+```
+
+See `example_prompt_generation.py` for more examples.
 
 ## Configuration
 
