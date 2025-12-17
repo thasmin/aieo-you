@@ -11,14 +11,17 @@ llm_visibility/
     config.py          # Configuration and .env support
     logging.py         # Logging setup
   client.py            # LLM client abstraction
+  crawler.py           # Website crawler and text extractor
   pipeline/            # Pipeline components (future)
   models/              # Data models (future)
   prompts/             # Prompt templates (future)
   reports/             # Report generation (future)
   data/
     logs/              # Application logs
+    crawls/            # Saved crawl data
   main.py              # Entry point
   example_llm_usage.py # LLM client usage examples
+  example_crawler_usage.py # Crawler usage examples
 ```
 
 ## Setup
@@ -87,6 +90,45 @@ print(response)
 ```
 
 See `example_llm_usage.py` for more examples.
+
+## Web Crawler
+
+The project includes a website crawler that fetches web pages and extracts clean text for LLM processing.
+
+### Features
+
+- **HTTP Fetching**: Fetches specific pages from websites
+- **HTML Parsing**: Extracts clean text from HTML
+- **Content Cleanup**: Removes scripts, styles, and navigation elements
+- **Graceful Error Handling**: Continues crawling even if pages don't exist
+- **Data Persistence**: Saves raw crawl data to `/data/crawls/`
+
+### Default Pages Crawled
+
+- Homepage (`/`)
+- `/about`
+- `/pricing`
+- `/product` or `/products`
+- `/solutions`
+
+### Usage Example
+
+```python
+from crawler import crawl_website
+
+# Basic crawl with default pages
+data = crawl_website("https://example.com")
+
+# Access concatenated text (all pages combined)
+print(data["concatenated_text"])
+
+# Access individual page data
+for url, page_data in data["pages"].items():
+    if page_data["success"]:
+        print(f"{url}: {len(page_data['text'])} chars")
+```
+
+See `example_crawler_usage.py` for more examples.
 
 ## Configuration
 
