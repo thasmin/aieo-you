@@ -1,0 +1,42 @@
+# Python
+*.py[cod]
+*$py.class
+*.so
+.Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+# Project-specific
+llm_visibility/data/logs/*.log
+llm_visibility/data/*.json
+llm_visibility/reports/*.html
+llm_visibility/reports/*.json
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
