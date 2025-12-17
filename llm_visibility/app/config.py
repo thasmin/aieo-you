@@ -23,6 +23,13 @@ class Config:
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
     ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
+    # LLM Configuration
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    DEFAULT_LLM_MODEL = os.getenv("DEFAULT_LLM_MODEL", "gpt-4")
+    LLM_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "60"))
+    LLM_MAX_RETRIES = int(os.getenv("LLM_MAX_RETRIES", "3"))
+
     @classmethod
     def get(cls, key: str, default=None):
         """Get configuration value."""

@@ -1,2 +1,5 @@
 # Core dependencies
 python-dotenv==1.0.0
+
+# LLM clients
+openai==1.58.1
