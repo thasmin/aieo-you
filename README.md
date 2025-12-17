@@ -12,16 +12,23 @@ llm_visibility/
     logging.py         # Logging setup
   client.py            # LLM client abstraction
   crawler.py           # Website crawler and text extractor
+  profile_extractor.py # Company profile extraction with LLM
+  models/
+    __init__.py
+    company.py         # Company profile data model
+  prompts/
+    __init__.py
+    company_profile.py # Profile extraction prompts
   pipeline/            # Pipeline components (future)
-  models/              # Data models (future)
-  prompts/             # Prompt templates (future)
   reports/             # Report generation (future)
   data/
     logs/              # Application logs
     crawls/            # Saved crawl data
+    company_profiles/  # Extracted company profiles
   main.py              # Entry point
   example_llm_usage.py # LLM client usage examples
   example_crawler_usage.py # Crawler usage examples
+  example_profile_extraction.py # Profile extraction examples
 ```
 
 ## Setup
@@ -129,6 +136,72 @@ for url, page_data in data["pages"].items():
 ```
 
 See `example_crawler_usage.py` for more examples.
+
+## Company Profile Extraction
+
+The project uses LLMs to extract structured company information from website text.
+
+### Features
+
+- **LLM-Powered Extraction**: Uses LLM to analyze website content
+- **Structured Output**: Extracts company profiles as validated JSON
+- **Single Call**: Completes extraction in a single LLM request
+- **Automatic Validation**: Ensures all required fields are present
+- **Data Persistence**: Saves profiles to `/data/company_profiles/`
+
+### Extracted Fields
+
+- **Company Name**: Name of the company
+- **Products**: List of products offered
+- **Services**: List of services offered
+- **Value Propositions**: Key benefits and value statements
+- **Category**: Primary business category (e.g., SaaS, E-commerce, Consulting)
+
+### Usage Example
+
+```python
+from crawler import crawl_website
+from profile_extractor import extract_profile
+
+# Step 1: Crawl website
+crawl_data = crawl_website("https://example.com")
+
+# Step 2: Extract profile using LLM
+profile = extract_profile(
+    website_text=crawl_data["concatenated_text"],
+    source_url=crawl_data["base_url"]
+)
+
+# Step 3: Use the profile
+print(f"Company: {profile.company_name}")
+print(f"Category: {profile.category}")
+print(f"Products: {profile.products}")
+print(f"Services: {profile.services}")
+
+# Save manually if needed
+profile.save()
+```
+
+### End-to-End Pipeline
+
+```python
+# Complete pipeline from URL to structured profile
+from crawler import crawl_website
+from profile_extractor import extract_profile
+
+# Crawl and extract in one go
+crawl_data = crawl_website("https://example.com", save=True)
+profile = extract_profile(
+    crawl_data["concatenated_text"],
+    crawl_data["base_url"],
+    save=True
+)
+
+# Profile is now saved and ready for downstream use
+print(profile)
+```
+
+See `example_profile_extraction.py` for more examples.
 
 ## Configuration
 

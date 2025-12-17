@@ -34,6 +34,7 @@ Thumbs.db
 llm_visibility/data/logs/*.log
 llm_visibility/data/*.json
 llm_visibility/data/crawls/*.json
+llm_visibility/data/company_profiles/*.json
 llm_visibility/reports/*.html
 llm_visibility/reports/*.json
 
